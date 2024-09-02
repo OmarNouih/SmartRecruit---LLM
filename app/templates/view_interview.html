@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% block title %}Interview Feedback{% endblock %}
+
+{% block content %}
+<style>
+    /* Light Mode */
+    .page-header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+        background: #f9f9f9; /* Light background */
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Lighter shadow */
+    }
+
+    .page-header .icon {
+        font-size: 24px;
+        color: #ffaf00; /* Icon color */
+        margin-right: 10px;
+    }
+
+    .page-header .page-title {
+        font-size: 28px;
+        color: #333; /* Dark text color for readability */
+        margin: 0;
+    }
+
+    /* Dark Mode */
+    body.dark .page-header {
+        background: #444; /* Dark background */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    body.dark .page-header .icon {
+        color: #ffaf00; /* Icon color */
+    }
+
+    body.dark .page-header .page-title {
+        color: #fff; /* Light text color for readability */
+    }
+
+    /* Chat-like Styling */
+    .feedback-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+    }
+
+    .feedback-item {
+        width: 100%;
+        max-width: 800px;
+        background: #ffffff; /* Light background */
+        color: #333; /* Dark text color */
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+    }
+
+    .feedback-item h3 {
+        margin-top: 0;
+        color: #ffaf00; /* Icon color */
+    }
+
+    .feedback-item p {
+        margin: 5px 0;
+    }
+
+    /* Dark Mode Styles for Feedback Items */
+    body.dark .feedback-item {
+        background: #1e1e1e; /* Dark background */
+        color: #e0e0e0; /* Light text color */
+        border: 1px solid #333;
+    }
+
+    .action-buttons {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    .action-buttons button {
+        background-color: #ffaf00; /* Orange color */
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        margin: 5px;
+    }
+
+    .action-buttons button:hover {
+        background-color: #e0a500; /* Darker orange */
+    }
+
+    .action-buttons .reject-button {
+        background-color: #d9534f; /* Red color for reject */
+    }
+
+    .action-buttons .reject-button:hover {
+        background-color: #c9302c; /* Darker red */
+    }
+</style>
+
+<div class="feedback-wrapper">
+    <div class="page-header">
+        <i class="uil uil-comments icon"></i>
+        <h1 class="page-title">Interview Feedback</h1>
+    </div>
+    <div class="feedback-list">
+        {% for feedback in feedback_list %}
+        <div class="feedback-item">
+            <h3>Question:</h3>
+            <p>{{ feedback.question }}</p>
+            <h3>Response:</h3>
+            <p>{{ feedback.response }}</p>
+            <h3>Feedback:</h3>
+            <p>{{ feedback.feedback }}</p>
+        </div>
+        {% else %}
+        <p>No feedback available for this candidate.</p>
+        {% endfor %}
+    </div>
+    <div class="action-buttons">
+        <form method="post" action="{{ url_for('main.accept_application', application_id=application_id) }}">
+            <button type="submit">Accept</button>
+        </form>
+        <form method="post" action="{{ url_for('main.reject_application', application_id=application_id) }}">
+            <button type="submit" class="reject-button">Reject</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Job{% endblock %}
+
+{% block content %}
+<div class="create-job">
+    <div class="title">
+        <i class="uil uil-briefcase"></i>
+        <span class="text">Edit Job</span>
+    </div>
+    <!-- Make sure the form action points to the correct route, like 'edit_job' -->
+    <form action="{{ url_for('main.edit_job', job_id=job.id) }}" method="post">
+        <div class="form-group">
+            <label for="job-title">Job Title</label>
+            <input type="text" id="job-title" name="title" value="{{ job.title }}" placeholder="Enter job title" required>
+        </div>
+        <div class="form-group">
+            <label for="job-description">Job Description</label>
+            <textarea id="job-description" name="description" placeholder="Enter job description" required>{{ job.description }}</textarea>
+        </div>
+        <div class="form-group">
+            <label for="job-location">Location</label>
+            <input type="text" id="job-location" name="location" value="{{ job.location }}" placeholder="Enter job location" required>
+        </div>
+        <div class="form-group">
+            <label for="job-salary">Salary</label>
+            <input type="number" id="job-salary" name="salary" value="{{ job.salary }}" placeholder="Enter job salary" required>
+        </div>
+        <button type="submit">Update Job</button>
+    </form>
+</div>
+{% endblock %}

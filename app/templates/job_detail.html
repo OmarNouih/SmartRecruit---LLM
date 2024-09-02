@@ -1,0 +1,247 @@
+{% extends 'base.html' %}
+
+{% block title %}Job Details{% endblock %}
+
+{% block content %}
+<style>
+    /* Light Mode */
+    .job-detail-container {
+        background: #fff;
+        padding: 20px;
+        margin: 20px auto;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        max-width: 800px;
+    }
+
+    .job-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .job-image {
+        background-color: #ffaf00;
+        color: #fff;
+        font-size: 32px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        width: 70px;
+        height: 70px;
+        margin-right: 20px;
+    }
+
+    .job-header h1 {
+        font-size: 32px;
+        margin: 0;
+        color: #333;
+    }
+
+    .job-details {
+        margin-bottom: 20px;
+    }
+
+    .job-details p {
+        font-size: 18px;
+        margin: 10px 0;
+    }
+
+    .job-details p i {
+        margin-right: 10px;
+    }
+
+    .job-description {
+        font-size: 16px;
+        line-height: 1.5;
+    }
+
+    .actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 30px;
+    }
+
+    .apply-button {
+        background-color: #28a745;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .apply-button:hover {
+        background-color: #218838;
+    }
+
+    .back-link {
+        text-decoration: none;
+        color: #007bff;
+        font-size: 16px;
+    }
+
+    .back-link:hover {
+        text-decoration: underline;
+    }
+
+    /* Dark Mode */
+    body.dark .job-detail-container {
+        background: #333;
+        color: #fff;
+    }
+
+    body.dark .job-header h1 {
+        color: #fff;
+    }
+
+    body.dark .job-details p i {
+        color: #ffaf00;
+    }
+
+    body.dark .job-description {
+        color: #ddd;
+    }
+
+    body.dark .apply-button {
+        background-color: #28a745;
+        color: #fff;
+    }
+
+    body.dark .apply-button:hover {
+        background-color: #218838;
+    }
+
+    body.dark .back-link {
+        color: #007bff;
+    }
+    /* Light Mode */
+    .job-detail-container {
+        background: #fff;
+        padding: 20px;
+        margin: 20px auto;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        max-width: 800px;
+        overflow: auto; /* Allow for overflow */
+    }
+    
+    .job-description {
+        font-size: 16px;
+        line-height: 1.5;
+        overflow: auto; /* Allow for overflow */
+        white-space: pre-wrap; /* Preserve whitespace and allow wrapping */
+        word-break: break-word; /* Break long words if necessary */
+    }
+    
+    /* Dark Mode */
+    body.dark .job-detail-container {
+        background: #333;
+        color: #fff;
+    }
+    
+    body.dark .job-description {
+        color: #ddd;
+    }
+    /* Custom Scrollbar Styles */
+    .job-description::-webkit-scrollbar {
+        width: 8px; /* Width of the scrollbar */
+        height: 6px;
+    }
+
+    body.dark .job-description::-webkit-scrollbar {
+        width: 8px; /* Width of the scrollbar */
+        height: 6px;
+
+    }
+    
+    /* Flash Message Styles */
+    .flash-container {
+        margin-bottom: 20px;
+    }
+    
+    .flash {
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 5px;
+        color: #fff;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .flash.alert {
+        background-color: #007bff; /* Blue for general alerts */
+    }
+    
+    .flash.error {
+        background-color: #dc3545; /* Red for errors */
+    }
+    
+    .flash .icon {
+        margin-right: 10px;
+        font-size: 18px;
+    }
+    
+    /* Dark Mode */
+    body.dark .flash.alert {
+        background-color: #0056b3; /* Darker blue for alerts in dark mode */
+    }
+    
+    body.dark .flash.error {
+        background-color: #c82333; /* Darker red for errors in dark mode */
+    }
+    
+
+</style>
+<!-- Flash Messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="flash-container">
+            {% for category, message in messages %}
+                <div class="flash {{ category }}">
+                    <span class="icon">
+                        {% if category == 'error' %}
+                            <i class="uil uil-exclamation-circle"></i> <!-- Error icon -->
+                        {% else %}
+                            <i class="uil uil-info-circle"></i> <!-- Alert icon -->
+                        {% endif %}
+                    </span>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
+
+<div class="job-detail-container">
+    <div class="job-header">
+        <div class="job-image">
+            {{ job.title[0] | upper }}
+        </div>
+        <h1>{{ job.title }}</h1>
+    </div>
+
+    <div class="job-details">
+        <p><i class="uil uil-location-point"></i>Location: {{ job.location }}</p>
+        <p><i class="uil uil-money-bill"></i>Salary: {{ job.salary }}</p>
+        <p><i class="uil uil-calendar-alt"></i>Date Posted: {{ job.date_posted.strftime('%Y-%m-%d') }}</p>
+    </div>
+
+    <div class="job-description">
+        <h2>Job Description</h2>
+        <div>{{ job.description | safe }}</div>
+    </div>
+
+    <div class="actions">
+        <a href="{{ url_for('main.home') }}" class="back-link">&larr; Back to Job Listings</a>
+        <a href="{{ url_for('main.apply', job_id = job.id) }}" class="apply-button">Apply</a>
+    </div>
+</div>
+{% endblock %}

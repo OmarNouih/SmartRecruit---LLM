@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>{% block title %}Home{% endblock %}</title>
+</head>
+<body>
+    <nav>
+        <div class="logo-name">
+            <div class="logo-image">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
+            </div>
+        </div>
+        <div class="menu-items">
+            <ul class="nav-links">
+                <li><a href="{{ url_for('main.home') }}">
+                    <i class="uil uil-estate"></i>
+                    <span class="link-name">Home</span>
+                </a></li>
+                <li><a href="{{ url_for('main.view_applications') }}">
+                    <i class="uil uil-list-ul"></i>
+                    <span class="link-name">My Applications</span>
+                </a></li>
+                <li><a href="{{ url_for('main.my_jobs') }}">
+                    <i class="uil uil-briefcase"></i>
+                    <span class="link-name">My Jobs</span>
+                </a></li>
+                <li><a href="{{ url_for('main.settings') }}">
+                    <i class="uil uil-setting"></i>
+                    <span class="link-name">Settings</span>
+                </a></li>
+                <!-- Add more links if needed -->
+            </ul>
+            <ul class="logout-mode">
+                <li><a href="{{ url_for('main.logout') }}">
+                    <i class="uil uil-signout"></i>
+                    <span class="link-name">Logout</span>
+                </a></li>
+                <li class="mode">
+                    <a href="#">
+                        <i class="uil uil-moon"></i>
+                        <span class="link-name">Dark Mode</span>
+                    </a>
+                    <div class="mode-toggle">
+                        <span class="switch"></span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <section class="dashboard">
+        <div class="top">
+            <i class="uil uil-bars sidebar-toggle"></i>
+            {% if user and user.profile_photo %}
+                <a href="{{ url_for('main.settings') }}">
+                    <img src="{{ url_for('static', filename='uploads/photos/' + user.profile_photo) }}" alt="Profile Photo">
+                </a>
+            {% else %}
+                <a href="{{ url_for('main.settings') }}">
+                    <img src="{{ url_for('static', filename='images/default-profile.png') }}" alt="Default Profile Photo">
+                </a>
+            {% endif %}
+        </div>
+        <div class="dash-content">
+            {% block content %}{% endblock %}
+        </div>
+    </section>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

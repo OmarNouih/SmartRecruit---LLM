@@ -1,0 +1,1093 @@
+/* ===== Google Font Import - Poppins ===== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600&display=swap');
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+:root{
+    /* ===== Colors ===== */
+    --primary-color: #ffaf00;
+    --panel-color: #FFF;
+    --text-color: #000;
+    --black-light-color: #707070;
+    --border-color: #e6e5e5;
+    --toggle-color: #DDD;
+    --box1-color: #4DA3FF;
+    --box2-color: #FFE6AC;
+    --box3-color: #E7D1FC;
+    --title-icon-color: #fff;
+    
+    /* ====== Transition ====== */
+    --tran-05: all 0.5s ease;
+    --tran-03: all 0.3s ease;
+    --tran-03: all 0.2s ease;
+}
+
+body{
+    min-height: 100vh;
+    background-color: var(--primary-color);
+}
+body.dark{
+    --primary-color: #3A3B3C;
+    --panel-color: #242526;
+    --text-color: #CCC;
+    --black-light-color: #CCC;
+    --border-color: #4D4C4C;
+    --toggle-color: #FFF;
+    --box1-color: #3A3B3C;
+    --box2-color: #3A3B3C;
+    --box3-color: #3A3B3C;
+    --title-icon-color: #CCC;
+}
+/* === Custom Scroll Bar CSS === */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #0b3cc1;
+}
+
+body.dark::-webkit-scrollbar-thumb:hover,
+body.dark .activity-data::-webkit-scrollbar-thumb:hover{
+    background: #3A3B3C;
+}
+
+nav{
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 250px;
+    padding: 10px 14px;
+    background-color: var(--panel-color);
+    border-right: 1px solid var(--border-color);
+    transition: var(--tran-05);
+}
+nav.close{
+    width: 73px;
+}
+nav .logo-name{
+    display: flex;
+    align-items: center;
+}
+nav .logo-image{
+    display: flex;
+    justify-content: center;
+    min-width: 45px;
+}
+nav .logo-image img{
+    width: 200px;
+    object-fit: cover;
+}
+
+nav .logo-name .logo_name{
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-left: 14px;
+    transition: var(--tran-05);
+}
+nav.close .logo_name{
+    opacity: 0;
+    pointer-events: none;
+}
+nav .menu-items{
+    margin-top: 40px;
+    height: calc(100% - 90px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.menu-items li{
+    list-style: none;
+}
+.menu-items li a{
+    display: flex;
+    align-items: center;
+    height: 50px;
+    text-decoration: none;
+    position: relative;
+}
+.nav-links li a:hover:before{
+    content: "";
+    position: absolute;
+    left: -7px;
+    height: 5px;
+    width: 5px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+}
+body.dark li a:hover:before{
+    background-color: var(--text-color);
+}
+.menu-items li a i{
+    font-size: 24px;
+    min-width: 45px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--black-light-color);
+}
+.menu-items li a .link-name{
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--black-light-color);    
+    transition: var(--tran-05);
+}
+nav.close li a .link-name{
+    opacity: 0;
+    pointer-events: none;
+}
+.nav-links li a:hover i,
+.nav-links li a:hover .link-name{
+    color: var(--primary-color);
+}
+body.dark .nav-links li a:hover i,
+body.dark .nav-links li a:hover .link-name{
+    color: var(--text-color);
+}
+.menu-items .logout-mode{
+    padding-top: 10px;
+    border-top: 1px solid var(--border-color);
+}
+.menu-items .mode{
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+}
+.menu-items .mode-toggle{
+    position: absolute;
+    right: 14px;
+    height: 50px;
+    min-width: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.mode-toggle .switch{
+    position: relative;
+    display: inline-block;
+    height: 22px;
+    width: 40px;
+    border-radius: 25px;
+    background-color: var(--toggle-color);
+}
+.switch:before{
+    content: "";
+    position: absolute;
+    left: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 15px;
+    width: 15px;
+    background-color: var(--panel-color);
+    border-radius: 50%;
+    transition: var(--tran-03);
+}
+body.dark .switch:before{
+    left: 20px;
+}
+
+.dashboard{
+    position: relative;
+    left: 250px;
+    background-color: var(--panel-color);
+    min-height: 100vh;
+    width: calc(100% - 250px);
+    padding: 10px 14px;
+    transition: var(--tran-05);
+}
+nav.close ~ .dashboard{
+    left: 73px;
+    width: calc(100% - 73px);
+}
+.dashboard .top{
+    position: fixed;
+    top: 0;
+    left: 250px;
+    display: flex;
+    width: calc(100% - 250px);
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    background-color: var(--panel-color);
+    transition: var(--tran-05);
+    z-index: 10;
+}
+nav.close ~ .dashboard .top{
+    left: 73px;
+    width: calc(100% - 73px);
+}
+.dashboard .top .sidebar-toggle{
+    font-size: 26px;
+    color: var(--text-color);
+    cursor: pointer;
+}
+.dashboard .top .search-box{
+    position: relative;
+    height: 45px;
+    max-width: 600px;
+    width: 100%;
+    margin: 0 30px;
+}
+.top .search-box input{
+    position: absolute;
+    border: 1px solid var(--border-color);
+    background-color: var(--panel-color);
+    padding: 0 25px 0 50px;
+    border-radius: 5px;
+    height: 100%;
+    width: 100%;
+    color: var(--text-color);
+    font-size: 15px;
+    font-weight: 400;
+    outline: none;
+}
+.top .search-box i{
+    position: absolute;
+    left: 15px;
+    font-size: 22px;
+    z-index: 10;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--black-light-color);
+}
+.top img{
+    width: 40px;
+    border-radius: 50%;
+    height: 40px;
+    cursor: inherit;
+}
+.dashboard .dash-content{
+    padding-top: 50px;
+}
+.dash-content .title{
+    display: flex;
+    align-items: center;
+    margin: 60px 0 30px 0;
+}
+.dash-content .title i{
+    position: relative;
+    height: 35px;
+    width: 35px;
+    background-color: var(--primary-color);
+    border-radius: 6px;
+    color: var(--title-icon-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+.dash-content .title .text{
+    font-size: 24px;
+    font-weight: 500;
+    color: var(--text-color);
+    margin-left: 10px;
+}
+.dash-content .boxes{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+.dash-content .boxes .box{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 12px;
+    width: calc(100% / 3 - 15px);
+    padding: 15px 20px;
+    background-color: var(--box1-color);
+    transition: var(--tran-05);
+}
+.boxes .box i{
+    font-size: 35px;
+    color: var(--text-color);
+}
+.boxes .box .text{
+    white-space: nowrap;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--text-color);
+}
+.boxes .box .number{
+    font-size: 40px;
+    font-weight: 500;
+    color: var(--text-color);
+}
+.boxes .box.box2{
+    background-color: var(--box2-color);
+}
+.boxes .box.box3{
+    background-color: var(--box3-color);
+}
+.dash-content .activity .activity-data{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+.activity .activity-data{
+    display: flex;
+}
+.activity-data .data{
+    display: flex;
+    flex-direction: column;
+    margin: 0 15px;
+}
+.activity-data .data-title{
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--text-color);
+}
+.activity-data .data .data-list{
+    font-size: 18px;
+    font-weight: 400;
+    margin-top: 20px;
+    white-space: nowrap;
+    color: var(--text-color);
+}
+
+@media (max-width: 1000px) {
+    nav{
+        width: 73px;
+    }
+    nav.close{
+        width: 250px;
+    }
+    nav .logo_name{
+        opacity: 0;
+        pointer-events: none;
+    }
+    nav.close .logo_name{
+        opacity: 1;
+        pointer-events: auto;
+    }
+    nav li a .link-name{
+        opacity: 0;
+        pointer-events: none;
+    }
+    nav.close li a .link-name{
+        opacity: 1;
+        pointer-events: auto;
+    }
+    nav ~ .dashboard{
+        left: 73px;
+        width: calc(100% - 73px);
+    }
+    nav.close ~ .dashboard{
+        left: 250px;
+        width: calc(100% - 250px);
+    }
+    nav ~ .dashboard .top{
+        left: 73px;
+        width: calc(100% - 73px);
+    }
+    nav.close ~ .dashboard .top{
+        left: 250px;
+        width: calc(100% - 250px);
+    }
+    .activity .activity-data{
+        overflow-X: scroll;
+    }
+}
+
+@media (max-width: 780px) {
+    .dash-content .boxes .box{
+        width: calc(100% / 2 - 15px);
+        margin-top: 15px;
+    }
+}
+@media (max-width: 560px) {
+    .dash-content .boxes .box{
+        width: 100% ;
+    }
+}
+@media (max-width: 400px) {
+    nav{
+        width: 0px;
+    }
+    nav.close{
+        width: 73px;
+    }
+    nav .logo_name{
+        opacity: 0;
+        pointer-events: none;
+    }
+    nav.close .logo_name{
+        opacity: 0;
+        pointer-events: none;
+    }
+    nav li a .link-name{
+        opacity: 0;
+        pointer-events: none;
+    }
+    nav.close li a .link-name{
+        opacity: 0;
+        pointer-events: none;
+    }
+    nav ~ .dashboard{
+        left: 0;
+        width: 100%;
+    }
+    nav.close ~ .dashboard{
+        left: 73px;
+        width: calc(100% - 73px);
+    }
+    nav ~ .dashboard .top{
+        left: 0;
+        width: 100%;
+    }
+    nav.close ~ .dashboard .top{
+        left: 0;
+        width: 100%;
+    }
+}
+
+/* Styling for the Create Job Form */
+/* Light mode styles */
+.create-job {
+    padding: 20px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.create-job .title {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.create-job .title i {
+    font-size: 24px;
+    color: #333;
+    margin-right: 10px;
+}
+
+.create-job .title .text {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+}
+
+.create-job form {
+    display: flex;
+    flex-direction: column;
+}
+
+.create-job .form-group {
+    margin-bottom: 15px;
+}
+
+.create-job .form-group label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.create-job .form-group input,
+.create-job .form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #333;
+}
+
+.create-job .form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.create-job button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.create-job button:hover {
+    background-color: #0056b3;
+}
+
+/* Dark mode styles */
+body.dark .create-job {
+    background-color: #333;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+body.dark .create-job .title i {
+    color: #f5f5f5;
+}
+
+body.dark .create-job .title .text {
+    color: #f5f5f5;
+}
+
+body.dark .create-job .form-group label {
+    color: #ddd;
+}
+
+body.dark .create-job .form-group input,
+body.dark .create-job .form-group textarea {
+    background-color: #444;
+    border: 1px solid #555;
+    color: #f5f5f5;
+}
+
+body.dark .create-job button {
+    background-color: #0056b3;
+    color: #fff;
+}
+
+body.dark .create-job button:hover {
+    background-color: #003d7a;
+}
+
+/* dd */
+/* General Styles for Forms Container */
+.container {
+    display: flex;
+    min-height: 100vh;
+    background-color: var(--primary-color);
+}
+
+.forms-container {
+    display: flex;
+    width: 100%;
+    transition: var(--tran-05);
+}
+
+.form-control {
+    background-color: var(--panel-color);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    margin: auto;
+}
+
+.form-control h2 {
+    margin-bottom: 20px;
+    color: var(--text-color);
+    font-size: 24px;
+}
+
+.form-control input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    margin-bottom: 15px;
+    font-size: 14px;
+    color: var(--text-color);
+}
+
+.form-control button {
+    background-color: var(--primary-color);
+    color: var(--panel-color);
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.form-control button:hover {
+    background-color: #0056b3;
+}
+
+.form-control span {
+    display: block;
+    text-align: center;
+    margin: 10px 0;
+    color: var(--text-color);
+}
+
+.socials {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.socials i {
+    font-size: 24px;
+    color: var(--text-color);
+}
+
+/* Intro Container */
+.intros-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    flex-direction: column;
+}
+
+.intro-control {
+    display: none;
+    text-align: center;
+    color: var(--text-color);
+}
+
+.intro-control__inner {
+    padding: 20px;
+}
+
+.intro-control h2 {
+    margin-bottom: 10px;
+}
+
+.intro-control p {
+    margin-bottom: 20px;
+}
+
+.intro-control button {
+    background-color: var(--primary-color);
+    color: var(--panel-color);
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.intro-control button:hover {
+    background-color: #0056b3;
+}
+
+/* Form Control Show/Hide Transition */
+.container.change .signin-form {
+    transform: translateX(100%);
+}
+
+.container.change .signup-form {
+    transform: translateX(-100%);
+}
+
+.container .signup-intro {
+    display: none;
+}
+
+.container.change .signup-intro {
+    display: block;
+}
+
+.container .signin-intro {
+    display: block;
+}
+
+.container.change .signin-intro {
+    display: none;
+}
+
+body.dark .form-control {
+    background-color: #333;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+body.dark .form-control input {
+    background-color: #444;
+    border: 1px solid #555;
+    color: #f5f5f5;
+}
+
+body.dark .form-control button {
+    background-color: #0056b3;
+}
+
+body.dark .form-control button:hover {
+    background-color: #003d7a;
+}
+
+body.dark .intro-control {
+    color: #f5f5f5;
+}
+
+body.dark .socials i {
+    color: #f5f5f5;
+}
+
+/* Default Light Mode Styles */
+.jobs-wrapper {
+    width: 100%;
+    padding: 20px;
+    background: #f9f9f9; /* Light background */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.search-input {
+    padding: 10px;
+    width: 87%;
+    border: 1px solid #ddd; /* Light border */
+    border-radius: 5px;
+    background: #fff; /* Light background */
+    color: #333; /* Dark text */
+}
+
+.add-job-button {
+    background: #ffaf00; /* Accent color */
+    color: #fff;
+    padding: 9px 16px;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.add-job-button:hover {
+    background: #e68a00; /* Hover color */
+}
+
+.jobs-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.job-card {
+    width: calc(33% - 20px);
+    background: #fff; /* Light card background */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    color: #333; /* Dark text */
+    overflow: hidden; /* Ensures content doesn't overflow */
+    position: relative; /* For absolute positioning of the overflow handling */
+    display: flex;
+    flex-direction: column; /* Allows vertical alignment */
+    justify-content: space-between; /* Aligns content */
+}
+
+.job-card .job-title {
+    margin-bottom: 15px;
+    text-align: center;
+    white-space: nowrap; /* Prevents title from wrapping */
+    overflow: hidden; /* Hides overflowed text */
+    text-overflow: ellipsis; /* Adds ellipsis for overflowed text */
+}
+
+.job-card .job-title h2 {
+    font-size: 24px;
+    color: #ffaf00; /* Accent color */
+}
+
+.job-card p {
+    font-size: 16px;
+    margin: 10px 0;
+    overflow: hidden; /* Ensures content doesn't overflow */
+    text-overflow: ellipsis; /* Adds ellipsis for overflowed text */
+    white-space: normal; /* Allows text to wrap */
+}
+
+.job-card .job-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.job-card .job-actions a,
+.job-card .job-actions button {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.job-card .job-actions a {
+    color: #ffaf00; /* Accent color */
+    border: 2px solid #ffaf00;
+    background: none;
+}
+
+.job-card .job-actions a:hover {
+    background: #ffaf00; /* Accent color */
+    color: #fff; /* Light text */
+}
+
+.job-card .job-actions button {
+    color: #fff; /* Light text */
+}
+
+.job-card .job-actions button.edit-button {
+    background: #28a745; /* Green for edit */
+}
+
+.job-card .job-actions button.delete-button {
+    background: #dc3545; /* Red for delete */
+}
+
+.job-card .job-actions button.edit-button:hover {
+    background: #218838; /* Darker green for hover */
+}
+
+.job-card .job-actions button.delete-button:hover {
+    background: #c82333; /* Darker red for hover */
+}
+
+/* Dark Mode Styles */
+body.dark .jobs-wrapper {
+    background: #333; /* Dark background */
+}
+
+body.dark .search-input {
+    border: 1px solid #444; /* Dark border */
+    background: #444; /* Dark background */
+    color: #fff; /* Light text */
+}
+
+body.dark .job-card {
+    background: #444; /* Dark card background */
+    color: #fff; /* Light text */
+}
+
+body.dark .job-card .job-title h2 {
+    color: #ffaf00; /* Accent color */
+}
+
+body.dark .job-card .job-actions button.edit-button {
+    background: #28a745; /* Green for edit */
+    color: #fff; /* Light text */
+}
+
+body.dark .job-card .job-actions button.delete-button {
+    background: #dc3545; /* Red for delete */
+    color: #fff; /* Light text */
+}
+
+body.dark .job-card .job-actions button.edit-button:hover {
+    background: #218838; /* Darker green for hover */
+}
+
+body.dark .job-card .job-actions button.delete-button:hover {
+    background: #c82333; /* Darker red for hover */
+}
+
+/* Edit Button */
+.job-card .job-actions .edit-button {
+    background: #28a745; /* Green background for Edit */
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.job-card .job-actions .edit-button:hover {
+    background: #218838; /* Darker green for hover */
+}
+
+/* Delete Button */
+.job-card .job-actions .delete-button {
+    background: #dc3545; /* Red background for Delete */
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.job-card .job-actions .delete-button:hover {
+    background: #c82333; /* Darker red for hover */
+}
+
+/* Responsive Styles */
+@media (max-width: 1045px) {
+    .job-card {
+        width: calc(50% - 20px);
+    }
+}
+
+@media (max-width: 710px) {
+    .job-card {
+        width: 100%;
+    }
+}
+
+.settings-container {
+    padding: 20px;
+}
+
+.settings-flex {
+    display: flex;
+    gap: 20px;
+}
+
+.general-settings {
+    flex: 0 0 40%;
+}
+
+.cv-settings {
+    flex: 0 0 60%;
+}
+
+.settings-flex .form-group {
+    margin-bottom: 15px;
+}
+
+.settings-flex .form-group label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.settings-flex .form-group input,
+.settings-flex .form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #333;
+}
+
+.settings-flex .form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.settings-flex button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.settings-flex button:hover {
+    background-color: #0056b3;
+}
+
+/* Dark mode styles */
+body.dark .settings-flex {
+    background-color: #333;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+body.dark .settings-flex .form-group label {
+    color: #ddd;
+}
+
+body.dark .settings-flex .form-group input,
+body.dark .settings-flex .form-group textarea {
+    background-color: #444;
+    border: 1px solid #555;
+    color: #f5f5f5;
+}
+
+body.dark .settings-flex button {
+    background-color: #0056b3;
+    color: #fff;
+}
+
+body.dark .settings-flex button:hover {
+    background-color: #003d7a;
+}
+
+.create-job .form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd; /* or var(--border-color) for consistency */
+    border-radius: 4px;
+    font-size: 14px;
+    color: #333; /* or var(--text-color) */
+    background-color: #fff; /* or var(--panel-color) for dark mode */
+}
+
+body.dark .create-job .form-group select {
+    background-color: #444;
+    border: 1px solid #555;
+    color: #f5f5f5;
+}
+       /* Flash Message Styles */
+       .alert-container {
+        position: fixed;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        max-width: 500px;
+        z-index: 1000;
+    }
+
+    .alert {
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 5px;
+        color: #fff;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .alert.alert-info {
+        background-color: #007bff; /* Blue for general alerts */
+    }
+
+    .alert.alert-danger {
+        background-color: #dc3545; /* Red for errors */
+    }
+
+    .alert .icon {
+        margin-right: 10px;
+        font-size: 18px;
+    }
+    
+    .alert.alert-success {
+        background-color: #1a9d1a; /* Blue for general alerts */
+    }
+
+    /* Dark Mode */
+    body.dark .alert.alert-info {
+        background-color: #0056b3; /* Darker blue for alerts in dark mode */
+    }
+
+    body.dark .alert.alert-danger {
+        background-color: #c82333; /* Darker red for errors in dark mode */
+    }
+
+    body.dark .alert.alert-success {
+        background-color: #c82333; /* Darker red for errors in dark mode */
+    }

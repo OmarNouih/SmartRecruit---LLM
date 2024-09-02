@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block title %}My Jobs{% endblock %}
+
+{% block content %}
+<style>
+    /* Light Mode */
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    background: #f9f9f9; /* Light background */
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Lighter shadow */
+}
+
+.page-header .icon {
+    font-size: 24px;
+    color: #ffaf00; /* Icon color */
+    margin-right: 10px;
+}
+
+.page-header .page-title {
+    font-size: 28px;
+    color: #333; /* Dark text color for readability */
+    margin: 0;
+}
+/* Dark Mode */
+body.dark .page-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    background: #444; /* Dark background */
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+body.dark .page-header .icon {
+    font-size: 24px;
+    color: #ffaf00; /* Icon color */
+    margin-right: 10px;
+}
+
+body.dark .page-header .page-title {
+    font-size: 28px;
+    color: #fff; /* Light text color for readability */
+    margin: 0;
+}
+
+/* Additional Styles */
+.job-actions {
+    margin-top: 10px;
+}
+
+.job-actions a,
+.job-actions button {
+    margin-right: 10px;
+}
+</style>
+
+<div class="jobs-wrapper">
+    <div class="page-header">
+        <i class="uil uil-briefcase icon"></i>
+        <h1 class="page-title">My Jobs</h1>
+    </div>
+    <div class="header-bar">
+        <input type="text" placeholder="Search jobs..." class="search-input" id="search-input">
+        <a href="{{ url_for('main.create_job') }}" class="add-job-button">Add New Job</a>
+    </div>
+    <div class="jobs-list" id="jobs-list">
+        {% for job in jobs %}
+        <div class="job-card" data-title="{{ job.title | lower }}">
+            <div class="job-title">
+                <h2>{{ job.title }}</h2>
+            </div>
+            <div class="job-details">
+                <p><strong>Location:</strong> {{ job.location }}</p>
+                <p><strong>Description:</strong> {{ job.description | truncate(100) }}</p>
+                <p><strong>Salary:</strong> {{ job.salary }}</p>
+                <p><strong>Date Posted:</strong> {{ job.date_posted.strftime('%Y-%m-%d') }}</p>
+                <div class="job-actions">
+                    <a href="{{ url_for('main.edit_job', job_id=job.id) }}" class="edit-button">Edit</a>
+                    <form action="{{ url_for('main.delete_job', job_id=job.id) }}" method="POST" class="delete-form" style="display:inline;">
+                        <button type="submit" class="delete-button">Delete</button>
+                    </form>
+                    <a href="{{ url_for('main.view_candidates', job_id=job.id) }}" class="view-candidates-button">View Candidates</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('search-input');
+        const jobsList = document.getElementById('jobs-list');
+        const jobCards = jobsList.getElementsByClassName('job-card');
+    
+        searchInput.addEventListener('input', function() {
+            const query = searchInput.value.toLowerCase();
+    
+            Array.from(jobCards).forEach(card => {
+                const title = card.getAttribute('data-title');
+    
+                if (title.includes(query)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

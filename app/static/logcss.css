@@ -1,0 +1,290 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css");
+
+* {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-image: url("../images/background.jpg"); /* Correct path to the image */
+  background-size: cover; /* Ensures the image covers the entire background */
+  background-position: center; /* Centers the image */
+  background-repeat: no-repeat; /* Prevents the image from repeating */
+  font-size: 14px;
+}
+
+.container {
+  background-color: #fff;
+  width: 760px;
+  max-width: 100vw;
+  height: 480px;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.container .forms-container {
+  position: relative;
+  width: 50%;
+  text-align: center;
+}
+
+.container .forms-container .form-control {
+  position: absolute;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  height: 480px;
+  transition: all 0.5s ease-in;
+}
+
+.container .forms-container .form-control h2 {
+  font-size: 2rem;
+}
+
+.container .forms-container .form-control form {
+  display: flex;
+  flex-direction: column;
+  margin: 0px 30px;
+}
+
+.container .forms-container .form-control form input {
+  margin: 10px 0px;
+  border: none;
+  padding: 15px;
+  background-color: #efefef;
+  border-radius: 5px;
+}
+
+.container .forms-container .form-control form button {
+  border: none;
+  margin: 13px 34px;
+  padding: 10px;
+  margin-top: 5px;
+  background-color: #ff8c00; /* Orange color */
+  border-radius: 10px;
+  color: #fff;
+  cursor: pointer;
+}
+
+.container .forms-container .form-control form button:focus {
+  outline: none;
+}
+
+.container .forms-container .form-control span {
+  margin: 10px 0px;
+}
+
+.container .forms-container .form-control .socials i {
+  margin: 10px 10px; /* Increased margin to position icons higher */
+  color: #fff;
+  border-radius: 50%;
+  padding: 10px; /* Increased padding */
+}
+
+.container .forms-container .form-control .socials .fa-facebook-f {
+  background-color: #3b5998;
+}
+
+.container .forms-container .form-control .socials .fa-google-plus-g {
+  background-color: #db4a39;
+}
+
+.container .forms-container .form-control .socials .fa-linkedin-in {
+  background-color: #0e76a8;
+}
+
+.container .forms-container .form-control.signup-form {
+  opacity: 0;
+  z-index: 1;
+  left: 200%;
+}
+
+.container .forms-container .form-control.signin-form {
+  opacity: 1;
+  z-index: 2;
+  left: 0%;
+}
+
+.container .intros-container {
+  position: relative;
+  left: 50%;
+  width: 50%;
+  text-align: center;
+}
+
+.container .intros-container .intro-control {
+  position: absolute;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  height: 480px;
+  color: #fff;
+  background: linear-gradient(170deg, #ff8c00, #ff4500); /* Orange gradient */
+  transition: all 0.5s ease-in;
+}
+
+.container .intros-container .intro-control .intro-control__inner {
+  margin: 0px 30px;
+}
+
+.container .intros-container .intro-control button {
+  border: none;
+  padding: 15px 30px;
+  background-color: #ff8c00; /* Orange color */
+  border-radius: 50px;
+  color: #fff;
+  margin: 10px 0px;
+  cursor: pointer;
+}
+
+.container .intros-container .intro-control button:focus, 
+.container .intros-container .intro-control button:hover {
+  outline: none;
+  background-color: #ff4500; /* Darker orange on hover */
+}
+
+.container .intros-container .intro-control h3,
+.container .intros-container .intro-control p {
+  margin: 10px 0px;
+}
+
+.container .intros-container .intro-control.signin-intro {
+  opacity: 1;
+  z-index: 2;
+}
+
+.container .intros-container .intro-control.signup-intro {
+  opacity: 0;
+  z-index: 1;
+}
+
+.change .forms-container .form-control.signup-form {
+  opacity: 1;
+  z-index: 2;
+  transform: translateX(-100%);
+  padding: 10px;
+}
+
+.change .forms-container .form-control.signup-form button {
+  background-color: #ff4500 !important; /* Darker orange for signup */
+}
+
+.change .forms-container .form-control.signin-form {
+  opacity: 0;
+  z-index: 1;
+  transform: translateX(-100%);
+}
+
+.change .intros-container .intro-control {
+  transform: translateX(-100%);
+  background: linear-gradient(170deg, #ff8c00, #ff4500); /* Matching gradient */
+}
+
+.change .intros-container .intro-control #signin-btn {
+  background-color: #ff4500;
+}
+
+.change .intros-container .intro-control.signin-intro {
+  opacity: 0;
+  z-index: 1;
+}
+
+.change .intros-container .intro-control.signup-intro {
+  opacity: 1;
+  z-index: 2;
+}
+
+@media screen and (max-width: 480px) {
+  .container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  .container .forms-container {
+    order: 2;
+    width: 100%;
+    height: 50vh;
+  }
+  .container .forms-container .form-control {
+    position: absolute;
+    height: 50vh;
+  }
+  .container .forms-container .form-control.signup-form {
+    left: 0%;
+    margin-top: 70px;
+  }
+  .container .intros-container {
+    order: 1;
+    width: 100%;
+    left: 0%;
+    height: 40vh;
+  }
+  .container .intros-container .intro-control {
+    position: absolute;
+    height: 40vh;
+  }
+
+  .change .forms-container .form-control.signup-form {
+    transform: translateX(0%);
+  }
+  .change .forms-container .form-control.signin-form {
+    transform: translateX(0%);
+  }
+  .change .intros-container .intro-control {
+    transform: translateX(0%);
+  }
+}
+
+/* New form field styles */
+.container .forms-container .form-control form select {
+    margin: 10px 0px;
+    border: none;
+    padding: 15px;
+    background-color: #efefef;
+    border-radius: 5px;
+}
+
+.container .forms-container .form-control form input.additional-info {
+  margin: 10px 0px;
+  border: none;
+  padding: 15px;
+  background-color: #efefef;
+  border-radius: 5px;
+}
+
+/* Custom scrollbar styles for sign-up */
+.container .form-control.signup-form {
+  overflow-y: auto; /* Enable vertical scrollbar */
+}
+
+.container .form-control.signin-form {
+  overflow: hidden; /* Disable scrolling */
+}
+
+/* Adjust intro height */
+.container .intros-container .intro-control.signup-intro {
+  height: 480px; /* Same height as sign-up form */
+}
+
+/* Custom scrollbar styles */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #aaa;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: #ddd;
+}

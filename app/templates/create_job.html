@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Job{% endblock %}
+
+{% block content %}
+<div class="create-job">
+    <div class="title">
+        <i class="uil uil-briefcase"></i>
+        <span class="text">Create Job</span>
+    </div>
+    <form action="{{ url_for('main.create_job') }}" method="post">
+        <div class="form-group">
+            <label for="job-title">Job Title</label>
+            <input type="text" id="job-title" name="title" placeholder="Enter job title" required>
+        </div>
+        <div class="form-group">
+            <label for="job-description">Job Description</label>
+            <textarea id="job-description" name="description" placeholder="Enter job description" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="job-location">Location</label>
+            <select id="job-location" name="location" required>
+                <option value="" disabled selected>Select job location</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="job-salary">Salary</label>
+            <input type="number" id="job-salary" name="salary" placeholder="Enter job salary" required step="0.01">
+        </div>
+        <button type="submit">Create Job</button>
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const locationSelect = document.getElementById('job-location');
+
+        fetch('https://restcountries.com/v3.1/all')
+            .then(response => response.json())
+            .then(data => {
+                // Sort countries alphabetically
+                data.sort((a, b) => a.name.common.localeCompare(b.name.common));
+
+                data.forEach(country => {
+                    const option = document.createElement('option');
+                    option.value = country.name.common;
+                    option.textContent = country.name.common;
+                    locationSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error fetching country data:', error));
+    });
+</script>
+{% endblock %}

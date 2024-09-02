@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+
+{% block title %}Interview Questions{% endblock %}
+
+{% block content %}
+<style>
+    /* Light Mode */
+    .question-container {
+        background: #fff;
+        padding: 20px;
+        margin: 20px auto;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        max-width: 800px;
+    }
+
+    .question-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .question-icon {
+        background-color: #ffaf00;
+        color: #fff;
+        font-size: 32px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        width: 70px;
+        height: 70px;
+        margin-right: 20px;
+    }
+
+    .question-header h1 {
+        font-size: 32px;
+        margin: 0;
+        color: #333;
+    }
+
+    .question-content {
+        margin-bottom: 20px;
+        font-size: 18px;
+    }
+
+    .question-response {
+        margin-top: 20px;
+    }
+
+    .question-response textarea {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+        box-sizing: border-box;
+    }
+
+    .actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 30px;
+    }
+
+    .next-question-button {
+        background-color: #28a745;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .next-question-button:hover {
+        background-color: #218838;
+    }
+
+    .back-link {
+        text-decoration: none;
+        color: #007bff;
+        font-size: 16px;
+    }
+
+    .back-link:hover {
+        text-decoration: underline;
+    }
+
+    /* Dark Mode */
+    body.dark .question-container {
+        background: #333;
+        color: #fff;
+    }
+
+    body.dark .question-header h1 {
+        color: #fff;
+    }
+
+    body.dark .question-response textarea {
+        background: #444;
+        color: #fff;
+        border: 1px solid #555;
+    }
+
+    body.dark .next-question-button {
+        background-color: #28a745;
+        color: #fff;
+    }
+
+    body.dark .next-question-button:hover {
+        background-color: #218838;
+    }
+
+    body.dark .back-link {
+        color: #007bff;
+    }
+</style>
+
+<div class="question-container">
+    <div class="question-header">
+        <div class="question-icon">
+            Q
+        </div>
+        <h1>Interview Question {{ question_number }}</h1>
+    </div>
+
+    <div class="question-content">
+        <p>{{ question_text }}</p>
+    </div>
+
+    <form method="post">
+        <div class="question-response">
+            <textarea name="response" rows="5" placeholder="Type your response here..."></textarea>
+        </div>
+
+        <div class="actions">
+            <a href="{{ url_for('main.home') }}" class="back-link">&larr; Back to Job Listings</a>
+            <button type="submit" class="next-question-button">Next Question</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

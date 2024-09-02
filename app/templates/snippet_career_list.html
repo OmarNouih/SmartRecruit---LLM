@@ -1,0 +1,204 @@
+{% extends 'base.html' %}
+
+{% block title %}Available Jobs{% endblock %}
+
+{% block content %}
+<style>
+    /* Light Mode */
+    .page-header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+        background: #f9f9f9;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .page-header .icon {
+        font-size: 24px;
+        color: #ffaf00;
+        margin-right: 10px;
+    }
+
+    .page-header .page-title {
+        font-size: 28px;
+        color: #333;
+        margin: 0;
+    }
+
+    /* Dark Mode */
+    body.dark .page-header {
+        background: #444;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    body.dark .page-header .page-title {
+        color: #fff;
+    }
+
+    .header-bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 20px;
+        justify-content: space-between;
+    }
+
+    .header-bar input[type="text"], .header-bar select {
+        flex: 1;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+
+    .job-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #fff;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 100%;
+    }
+
+    body.dark .job-card {
+        background: #333;
+    }
+
+    .job-image {
+        background-color: #ffaf00;
+        color: #fff;
+        font-size: 24px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        margin-right: 20px;
+    }
+
+    .job-title h2 {
+        margin: 0;
+        font-size: 24px;
+    }
+
+    .job-details {
+        display: flex;
+        align-items: center;
+    }
+
+    .job-details p {
+        margin: 0 10px;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+    }
+
+    .job-details .icon {
+        margin-right: 5px;
+    }
+
+    .job-actions .edit-button {
+        padding: 5px 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        text-decoration: none;
+    }
+
+    .job-details .location-icon, .job-details .salary-icon {
+        margin-right: 5px;
+    }
+</style>
+
+<div class="jobs-wrapper">
+    <div class="page-header">
+        <i class="uil uil-briefcase icon"></i>
+        <h1 class="page-title">Available Jobs</h1>
+    </div>
+    <div class="header-bar">
+        <input type="text" placeholder="Search by job name..." class="search-input" id="search-by-name">
+        <input type="text" placeholder="Search by salary..." class="search-input" id="search-by-salary">
+        <select id="search-by-location" class="search-input">
+            <option value="" disabled selected>Select a location</option>
+            <!-- Options will be populated by JavaScript -->
+        </select>
+    </div>
+    <div class="jobs-list" id="jobs-list">
+        {% for job in jobs %}
+        <div class="job-card" data-title="{{ job.title | lower }}" data-salary="{{ job.salary }}" data-location="{{ job.location | lower }}">
+            <div class="job-image">
+                {{ job.title[0] | upper }}
+            </div>
+            <div class="job-title">
+                <h2>{{ job.title }}</h2>
+            </div>
+            <div class="job-details">
+                <p><i class="uil uil-location-point location-icon"></i>{{ job.location }}</p>
+                <p><i class="uil uil-money-bill salary-icon"></i>{{ job.salary }}</p>
+            </div>
+            <div class="job-actions">
+                <a href="{{ url_for('main.job_detail', job_id=job.id) }}" class="edit-button">Show More</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchByName = document.getElementById('search-by-name');
+        const searchBySalary = document.getElementById('search-by-salary');
+        const searchByLocation = document.getElementById('search-by-location');
+        const jobsList = document.getElementById('jobs-list');
+        const jobCards = jobsList.getElementsByClassName('job-card');
+
+        // Populate location dropdown with countries
+        fetch('https://restcountries.com/v3.1/all')
+            .then(response => response.json())
+            .then(data => {
+                data.sort((a, b) => a.name.common.localeCompare(b.name.common));
+                data.forEach(country => {
+                    const option = document.createElement('option');
+                    option.value = country.name.common.toLowerCase();
+                    option.textContent = country.name.common;
+                    searchByLocation.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error fetching country data:', error));
+
+        function filterJobs() {
+            const nameQuery = searchByName.value.toLowerCase();
+            const salaryQuery = searchBySalary.value;
+            const locationQuery = searchByLocation.value.toLowerCase();
+
+            Array.from(jobCards).forEach(card => {
+                const title = card.getAttribute('data-title');
+                const salary = card.getAttribute('data-salary');
+                const location = card.getAttribute('data-location');
+
+                const matchesName = title.includes(nameQuery);
+                const matchesSalary = salary.includes(salaryQuery);
+                const matchesLocation = location.includes(locationQuery) || locationQuery === '';
+
+                if (matchesName && matchesSalary && matchesLocation) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        searchByName.addEventListener('input', filterJobs);
+        searchBySalary.addEventListener('input', filterJobs);
+        searchByLocation.addEventListener('change', filterJobs);
+    });
+</script>
+{% endblock %}

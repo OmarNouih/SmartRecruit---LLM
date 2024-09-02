@@ -1,0 +1,223 @@
+{% extends 'base.html' %}
+
+{% block title %}Settings{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <i class="uil uil-settings icon"></i>
+    <h1 class="page-title">Account Setting</h1>
+</div>
+
+<div class="settings-container">
+    <!-- General Settings Section -->
+    <div class="settings-section general-info-bar">
+        <h2>General Info</h2>
+        
+        <!-- Profile Photo Section -->
+        <div class="profile-photo-container">
+            {% if user.profile_photo %}
+            <img src="{{ url_for('static', filename='uploads/photos/' ~ user.profile_photo) }}" alt="Profile Photo" class="profile-photo">
+            {% else %}
+            <p>No Profile Photo</p>
+            {% endif %}
+        </div>
+
+        <form action="{{ url_for('main.settings') }}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="first_name">First Name</label>
+                <input type="text" id="first_name" name="first_name" value="{{ user.first_name }}" required>
+            </div>
+            <div class="form-group">
+                <label for="last_name">Last Name</label>
+                <input type="text" id="last_name" name="last_name" value="{{ user.last_name }}" required>
+            </div>
+            <div class="form-group">
+                <label for="company_name">Company Name</label>
+                <input type="text" id="company_name" name="company_name" value="{{ user.company_name }}" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" value="{{ user.email }}" required>
+            </div>
+            <div class="form-group">
+                <label for="phone_number">Phone Number</label>
+                <input type="text" id="phone_number" name="phone_number" value="{{ user.phone_number }}" required>
+            </div>
+            <div class="form-group">
+                <label for="birthday">Birthday</label>
+                <input type="date" id="birthday" name="birthday" value="{{ user.birthday }}" required>
+            </div>
+            <div class="form-group">
+                <label for="profile_photo">Upload Profile Photo</label>
+                <input type="file" id="profile_photo" name="profile_photo">
+            </div>
+            <button type="submit" name="save_changes">Save Changes</button>
+        </form>
+    </div>
+
+    <!-- CV Section -->
+    <div class="settings-section cv-bar">
+        <h2>CV</h2>
+        <form action="{{ url_for('main.settings') }}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="cv_file">Upload CV (PDF only)</label>
+                <input type="file" id="cv_file" name="cv_file">
+            </div>
+            <button type="submit" name="upload_cv">Upload CV</button>
+        </form>
+        {% if user.cv_file %}
+        <div class="cv-display">
+            <h3>Current CV:</h3>
+            <embed src="{{ url_for('static', filename='uploads/cv/' ~ user.cv_file) }}" type="application/pdf" width="100%" height="600px" />
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    /* Page Header Styling */
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    background: #f9f9f9; /* Light background */
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Lighter shadow */
+}
+
+.page-header .icon {
+    font-size: 24px;
+    color: #ffaf00; /* Icon color */
+    margin-right: 10px;
+}
+
+.page-header .page-title {
+    font-size: 28px;
+    color: #333; /* Dark text color for readability */
+    margin: 0;
+}
+
+/* Dark Mode */
+body.dark .page-header {
+    background: #444; /* Dark background */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+body.dark .page-header .icon {
+    color: #ffaf00; /* Icon color */
+}
+
+body.dark .page-header .page-title {
+    color: #fff; /* Light text color for readability */
+}
+
+/* Settings Container */
+.settings-container {
+    display: flex;
+    gap: 20px;
+}
+
+.settings-section {
+    flex: 1;
+    padding: 20px;
+    border-radius: 8px;
+    background: #fff; /* Light background for sections */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Lighter shadow */
+}
+
+.general-info-bar {
+    flex: 40%;
+}
+
+.cv-bar {
+    flex: 60%;
+}
+
+/* Profile Photo Styling */
+.profile-photo-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.profile-photo {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%; /* Circle */
+    object-fit: cover;
+}
+
+/* Form Styling */
+.settings-section form {
+    display: flex;
+    flex-direction: column;
+}
+
+.settings-section .form-group {
+    margin-bottom: 15px;
+}
+
+.settings-section .form-group label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.settings-section .form-group input,
+.settings-section .form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #333;
+}
+
+.settings-section .form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.settings-section button {
+    background-color: #ffaf00; /* Updated color */
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.settings-section button:hover {
+    background-color: #e69a00; /* Slightly darker shade for hover */
+}
+
+/* Dark Mode */
+body.dark .settings-section {
+    background: #333; /* Dark background */
+}
+
+body.dark .settings-section .form-group label {
+    color: #ddd;
+}
+
+body.dark .settings-section .form-group input,
+body.dark .settings-section .form-group textarea {
+    background-color: #444;
+    border: 1px solid #555;
+    color: #f5f5f5;
+}
+
+body.dark .settings-section button {
+    background-color: #ffaf00; /* Updated color */
+}
+
+body.dark .settings-section button:hover {
+    background-color: #e69a00; /* Slightly darker shade for hover */
+}
+</style>
+{% endblock %}

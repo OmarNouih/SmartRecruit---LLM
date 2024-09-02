@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Signup</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='logcss.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Flash Message Styles */
+        .alert-container {
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 500px;
+            z-index: 1000;
+        }
+
+        .alert {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .alert.alert-info {
+            background-color: #007bff; /* Blue for general alerts */
+        }
+
+        .alert.alert-danger {
+            background-color: #dc3545; /* Red for errors */
+        }
+
+        .alert .icon {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .alert.alert-success {
+            background-color: #1a9d1a; /* Blue for general alerts */
+        }
+
+        /* Dark Mode */
+        body.dark .alert.alert-info {
+            background-color: #0056b3; /* Darker blue for alerts in dark mode */
+        }
+
+        body.dark .alert.alert-danger {
+            background-color: #c82333; /* Darker red for errors in dark mode */
+        }
+
+        body.dark .alert.alert-success {
+            background-color: #c82333; /* Darker red for errors in dark mode */
+        }
+
+    </style>
+</head>
+<body style="background-image: url('{{ url_for('static', filename='images/background.jpg') }}'); background-size: cover; background-position: center;">
+    <div class="alert-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        <i class="fas fa-info-circle icon"></i> <!-- Add appropriate icon based on category if needed -->
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+    
+    <div class="container">
+        <div class="forms-container">
+            <div class="form-control signup-form" style="justify-content: flex-start;">
+                <form method="POST" action="/sign">
+                    <h2>Signup</h2>
+                    <input type="text" name="first_name" placeholder="First Name" required />
+                    <input type="text" name="last_name" placeholder="Last Name" required />
+                    <input type="text" name="company_name" placeholder="Company Name" required />
+                    <input type="email" name="email" placeholder="Email" required />
+                    <input type="tel" name="phone_number" placeholder="Phone Number" required />
+                    <input type="date" name="birthday" placeholder="Birthday" required />
+                    <input type="password" name="password" placeholder="Password" required />
+                    <input type="password" name="confirm_password" placeholder="Confirm Password" required />
+                    <input type="hidden" name="action" value="signup" />
+                    <button type="submit">Signup</button>
+                </form>
+            </div>
+            <div class="form-control signin-form">
+                <form method="POST" action="/sign">
+                    <h2>Signin</h2>
+                    <input type="email" name="email" placeholder="Email" required />
+                    <input type="password" name="password" placeholder="Password" required />
+                    <input type="hidden" name="action" value="signin" />
+                    <button type="submit">Signin</button>
+                </form>
+            </div>
+        </div>
+        <div class="intros-container">
+            <div class="intro-control signin-intro">
+                <div class="intro-control__inner">
+                    <h2>Welcome back!</h2>
+                    <p>
+                        Welcome back! We are so happy to have you here. It's great to see you again. We hope you had a safe and enjoyable time away.
+                    </p>
+                    <button id="signup-btn">No account yet? Signup.</button>
+                </div>
+            </div>
+            <div class="intro-control signup-intro">
+                <div class="intro-control__inner">
+                    <h2>Come join us!</h2>
+                    <p>
+                        We are so excited to have you here. If you haven't already, create an account to get access to exclusive offers, rewards, and discounts.
+                    </p>
+                    <button id="signin-btn">Already have an account? Signin.</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const signupBtn = document.getElementById("signup-btn");
+            const signinBtn = document.getElementById("signin-btn");
+            const mainContainer = document.querySelector(".container");
+
+            signupBtn.addEventListener("click", () => {
+                mainContainer.classList.toggle("change");
+                document.querySelector(".intro-control.signin-intro").style.opacity = '0';
+                document.querySelector(".intro-control.signup-intro").style.opacity = '1';
+            });
+            signinBtn.addEventListener("click", () => {
+                mainContainer.classList.toggle("change");
+                document.querySelector(".intro-control.signin-intro").style.opacity = '1';
+                document.querySelector(".intro-control.signup-intro").style.opacity = '0';
+            });
+        });
+    </script>
+</body>
+</html>

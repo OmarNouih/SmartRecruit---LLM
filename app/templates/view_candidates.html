@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+
+{% block title %}View Candidates{% endblock %}
+
+{% block content %}
+<style>
+    /* Light Mode */
+    .page-header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+        background: #f9f9f9; /* Light background */
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Lighter shadow */
+    }
+
+    .page-header .icon {
+        font-size: 24px;
+        color: #ffaf00; /* Icon color */
+        margin-right: 10px;
+    }
+
+    .page-header .page-title {
+        font-size: 28px;
+        color: #333; /* Dark text color for readability */
+        margin: 0;
+    }
+
+    /* Dark Mode */
+    body.dark .page-header {
+        background: #444; /* Dark background */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    body.dark .page-header .icon {
+        color: #ffaf00; /* Icon color */
+    }
+
+    body.dark .page-header .page-title {
+        color: #fff; /* Light text color for readability */
+    }
+
+    /* Table Styles */
+    .candidates-wrapper {
+        text-align: center; /* Center-align table and button */
+    }
+
+    .candidates-table {
+        width: 80%; /* Center table and adjust width */
+        margin: 0 auto; /* Center table horizontally */
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+
+    .candidates-table th,
+    .candidates-table td {
+        padding: 12px;
+        border: 1px solid #ddd;
+        text-align: left;
+    }
+
+    .candidates-table th {
+        background-color: #ffaf00; /* Header background color */
+        color: #fff; /* Text color */
+    }
+
+    .candidates-table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .candidates-table tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .view-interview-button {
+        display: inline-block; /* Ensure button is inline-block for centering */
+        color: #fff; /* Button text color */
+        background-color: #ffaf00; /* Button background color */
+        text-decoration: none;
+        padding: 5px 10px;
+        border: 1px solid #ffaf00;
+        border-radius: 4px;
+        text-align: center; /* Center text within button */
+    }
+
+    .view-interview-button:hover {
+        background-color: #e59400; /* Darker orange for hover effect */
+        border-color: #e59400;
+    }
+
+    /* Dark Mode Table Styles */
+    body.dark .candidates-table th {
+        background-color: #666; /* Darker background */
+        color: #fff; /* Light text color */
+    }
+
+    body.dark .candidates-table td {
+        border: 1px solid #555; /* Darker border */
+        color: #ccc; /* Light text color */
+    }
+
+    body.dark .candidates-table tr:nth-child(even) {
+        background-color: #2e2e2e; /* Darker row background */
+    }
+
+    body.dark .candidates-table tr:hover {
+        background-color: #3a3a3a; /* Hover effect for dark mode */
+    }
+
+    body.dark .view-interview-button {
+        color: #fff; /* Button text color */
+        background-color: #ffaf00; /* Button background color */
+        border: 1px solid #ffaf00; /* Button border */
+    }
+
+    body.dark .view-interview-button:hover {
+        background-color: #e59400; /* Darker orange for hover effect */
+        border-color: #e59400;
+    }
+</style>
+
+<div class="candidates-wrapper">
+    <div class="page-header">
+        <i class="uil uil-users icon"></i>
+        <h1 class="page-title">Candidates for Job</h1>
+    </div>
+    <table class="candidates-table">
+        <thead>
+            <tr>
+                <th>Candidate Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for candidate in candidates %}
+            <tr>
+                <td>{{ candidate.name }}</td>
+                <td>{{ candidate.email }}</td>
+                <td>{{ candidate.phone }}</td>
+                <td>
+                    <a href="{{ url_for('main.view_interview', application_id=candidate.application_id) }}" class="view-interview-button">View Interview</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
