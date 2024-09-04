@@ -32,3 +32,5 @@ class Application(db.Model):
 
     user = db.relationship('User', backref=db.backref('applications', lazy=True))
     job = db.relationship('Job', backref=db.backref('applications', lazy=True))
+
+    __table_args__ = (db.UniqueConstraint('user_id', 'job_id', name='unique_user_job_application'),)

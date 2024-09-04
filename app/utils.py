@@ -87,7 +87,7 @@ def evaluate_cv(cv_text, job_description, threshold = 0.5):
     similarity = compute_similarity(cv_text, job_description)
     logging.info(f"Similarity score: {similarity:.2f}")
 
-    return similarity > threshold
+    return similarity > threshold, similarity
 
 def generate_interview_questions(cv_text, job_description, max_retries=10):
     """
@@ -159,32 +159,40 @@ Job Description:
 
     return ["Error: Could not generate questions after multiple attempts."]
 
-def generate_feedback(response_text, job_description, max_retries=10):
+def generate_feedback(question_text, response_text, job_description, max_retries=10):
     """
-    Generates feedback based on the candidate's response to an interview question and the job description. and generate a score /10 a la fin.
+    Generates feedback based on the candidate's response to an interview question, the question itself, and the job description, and generates a score out of 10 at the end.
 
     Args:
-        response_text (str): The candidate's response to an interview question.
+        question_text (str): The interview question asked to the candidate.
+        response_text (str): The candidate's response to the interview question.
         job_description (str): The text from the job description.
         max_retries (int): The maximum number of retries if the API call fails.
 
     Returns:
         str: The generated feedback or an error message.
     """
-    prompt = f"""Below is a response to an interview question and the job description. Provide concise and short feedback based on the response and the job description, and include a score out of 10 at the end.
+    prompt = f"""Below is an interview question, the candidate's response, and the job description. Provide concise , short and constructive feedback on the candidate's response, considering the job requirements and the context of the question. Make sure to include a score out of 10 at the end of the feedback. The score should always be formatted as 'Score: X/10'.
 
-### Response:
-{response_text}
+    ### Example:
+    Feedback: The candidate provided a well-thought-out response, addressing the key requirements of the job description effectively. However, they could improve on their technical knowledge. Score: 7/10
 
-### Job Description:
-{job_description}
+    ### Interview Question:
+    {question_text}
 
-### Feedback:
-"""
+    ### Candidate's Response:
+    {response_text}
+
+    ### Job Description:
+    {job_description}
+
+    ### Feedback:
+    """
+
     data = {
         "inputs": prompt,
         "parameters": {
-            "max_new_tokens": 200,
+            "max_new_tokens": 500,
             "temperature": 0.6,
             "top_p": 0.9,
             "do_sample": True
@@ -238,3 +246,32 @@ def convert_keys_to_strings(data):
         return [convert_keys_to_strings(i) for i in data]
     else:
         return data
+
+def extract_score(feedback):
+    """
+    Extracts the score from the feedback text using multiple patterns.
+
+    Args:
+        feedback (str): The feedback text containing the score.
+
+    Returns:
+        int: The extracted score or None if no score was found.
+    """
+    patterns = [
+        r'\b(\d{1,2})\s*/\s*10\b',                # Matches "3/10", "3 / 10", etc.
+        r'\b(\d{1,2})\s*out\s+of\s+10\b',         # Matches "3 out of 10", etc.
+        r'\b(\d{1,2})\s*over\s*10\b',             # Matches "3 over 10", etc.
+        r'\bscore\s+is\s+(\d{1,2})\b',            # Matches "score is 10", "score is 3", etc.
+        r'\brated\s+(\d{1,2})\s*/\s*10\b',        # Matches "rated 7/10", etc.
+        r'\brating\s+of\s+(\d{1,2})\s*/\s*10\b',  # Matches "rating of 8/10", etc.
+        r'\bgave\s+it\s+a\s+(\d{1,2})\b',         # Matches "gave it a 5", etc.
+        r'\b(\d{1,2})\b\s+(?:points|stars)\s*/\s*10\b' # Matches "5 points / 10", "5 stars / 10", etc.
+    ]
+
+    for pattern in patterns:
+        match = re.search(pattern, feedback, re.IGNORECASE)
+        if match:
+            return int(match.group(1))
+
+    logging.warning("No score found in feedback.")
+    return None

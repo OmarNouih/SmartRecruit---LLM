@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request, session, g, current_app, abort
+from flask import Blueprint, render_template, redirect, url_for, flash, request, session, g, current_app, abort, jsonify
 from markdown import markdown
 from werkzeug.utils import secure_filename
 from datetime import datetime
@@ -9,7 +9,7 @@ import time
 
 from . import db, applications_collection
 from .models import User, Job, Application
-from .utils import allowed_file, evaluate_cv, generate_interview_questions, generate_feedback, convert_keys_to_strings
+from .utils import allowed_file, evaluate_cv, extract_score, generate_interview_questions, generate_feedback, convert_keys_to_strings
 
 main = Blueprint('main', __name__)
 
@@ -263,8 +263,13 @@ def apply(job_id):
 
     job = Job.query.get_or_404(job_id)
 
-    existing_application = Application.query.filter_by(user_id=g.user.id, job_id=job_id).first()
-    if existing_application:
+    existing_application_sqlite = Application.query.filter_by(user_id=g.user.id, job_id=job_id).first()
+    existing_application_mongo = applications_collection.find_one({
+        'user_id': str(g.user.id),
+        'job_id': str(job_id)
+    })
+
+    if existing_application_sqlite or existing_application_mongo:
         flash('You have already applied for this job.', 'alert')
         return redirect(url_for('main.job_detail', job_id=job_id))
 
@@ -285,8 +290,9 @@ def apply(job_id):
         flash('Failed to process CV.', 'danger')
         return redirect(url_for('main.job_detail', job_id=job_id))
 
-    if not evaluate_cv(text, job.description):
-        flash('Your CV does not match the job requirements.', 'error')
+    match, similarity_score = evaluate_cv(text, job.description)
+    if not match:
+        flash(f'Your CV does not match the job requirements. Similarity score: {similarity_score:.2f}', 'error')
         return redirect(url_for('main.job_detail', job_id=job_id))
 
     questions = generate_interview_questions(text, job.description)
@@ -294,6 +300,7 @@ def apply(job_id):
     session['current_question'] = 0
     session['responses'] = {}
     session['job_id'] = job_id
+    session['similarity_score'] = similarity_score
 
     return redirect(url_for('main.interview_questions'))
 
@@ -330,26 +337,37 @@ def review_responses():
         flash('You need to sign in first.', 'danger')
         return redirect(url_for('main.auth'))
 
+    return render_template('loading.html', next_url = url_for('main.generate_feedbacks'))
+
+@main.route('/generate_feedbacks')
+def generate_feedbacks():
+    if g.user is None:
+        flash('You need to sign in first.', 'danger')
+        return redirect(url_for('main.auth'))
+
     responses = session.get('responses', {})
     questions = session.get('questions', [])
     job_id = session.get('job_id')
     job = Job.query.get_or_404(job_id)
+    similarity_score = session.get('similarity_score')
 
     feedback_list = []
     for idx, response in responses.items():
         question = questions[int(idx)]
-        feedback = generate_feedback(response, job.description)
-        time.sleep(2)  # To avoid hitting API rate limits
+        feedback = generate_feedback(question, response, job.description)
+        score = extract_score(feedback)
+        time.sleep(2)  
         feedback_list.append({
             'question': question,
             'response': response,
-            'feedback': feedback
+            'feedback': feedback,
+            'score':score
         })
 
     new_application = Application(
         user_id=g.user.id,
         job_id=job_id,
-        message="User responses reviewed",
+        message=similarity_score,
         timestamp=datetime.utcnow(),
         status='Pending'
     )
@@ -466,3 +484,84 @@ def reject_application(application_id):
     db.session.commit()
     flash('Application rejected.', 'success')
     return redirect(url_for('main.view_candidates', job_id=job.id))
+
+@main.route('/dashboard')
+def dashboard():
+    if g.user is None:
+        flash('You need to sign in first.', 'danger')
+        return redirect(url_for('main.auth'))
+
+    jobs = Job.query.filter_by(user_id=g.user.id).all()
+    return render_template('dashboard.html', jobs=jobs)
+
+@main.route('/get_job_data/<int:job_id>')
+def get_job_data(job_id):
+    if g.user is None:
+        abort(403)
+
+    job = Job.query.get_or_404(job_id)
+    if job.user_id != g.user.id:
+        abort(403)
+
+    applications = Application.query.filter_by(job_id=job_id).all()
+    candidates = []
+    ages = []
+    questions_responses = []
+
+    for app in applications:
+        candidate = User.query.get(app.user_id)
+        feedback_data = applications_collection.find_one({'application_id': str(app.id)})
+        total_score = sum(fb['score'] for fb in feedback_data.get('feedback', []) if fb['score'] is not None)
+
+        # Calculate age from birthday
+        try:
+            birthday = datetime.strptime(candidate.birthday, "%Y-%m-%d")
+            today = datetime.now()
+            age = today.year - birthday.year - ((today.month, today.day) < (birthday.month, birthday.day))
+        except ValueError:
+            age = None  # or set a default value if the birthday format is incorrect
+
+        if age is not None:
+            ages.append(age)
+
+        candidates.append({
+            'name': f"{candidate.first_name} {candidate.last_name}",
+            'score': total_score,
+            'app_id': app.id  # Store app ID for later use
+        })
+
+        # Add questions and responses
+        if feedback_data:
+            for feedback in feedback_data.get('feedback', []):
+                # Handle None score values by setting them to 0
+                score = feedback.get('score', 0) or 0
+                questions_responses.append({
+                    'question': feedback.get('question', ''),
+                    'response': feedback.get('response', ''),
+                    'score': score
+                })
+
+    # Sort candidates by score and select the top 3
+    top_candidates = sorted(candidates, key=lambda x: x['score'], reverse=True)[:3]
+
+    # Add similarity score for top 3 candidates
+    for candidate in top_candidates:
+        app = Application.query.get(candidate['app_id'])
+        try:
+            similarity_score = float(app.message)
+        except ValueError:
+            similarity_score = 0.0  # Default value if conversion fails
+
+        candidate['similarity'] = similarity_score  # Add similarity score to top candidates
+
+    # Prepare data for both top candidates and all candidates
+    all_candidates = [{'name': c['name'], 'totalScore': c['score']} for c in candidates]
+    scores = [{'name': c['name'], 'totalScore': c['score'], 'similarity': c.get('similarity', 0)} for c in top_candidates]
+
+    return jsonify({
+        'topCandidates': top_candidates,
+        'allCandidates': all_candidates,
+        'scores': scores,
+        'ages': ages,
+        'questionsResponses': sorted(questions_responses, key=lambda x: x['score'], reverse=True)
+    })

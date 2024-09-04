@@ -1,0 +1,398 @@
+{% extends 'base.html' %}
+
+{% block title %}Job Dashboard{% endblock %}
+
+{% block content %}
+<style>
+    /* Page Header Styling */
+    .dashboard-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        background: var(--panel-color);
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .dashboard-header .icon {
+        font-size: 24px;
+        color: var(--primary-color);
+        margin-right: 10px;
+    }
+
+    .dashboard-header .page-title {
+        font-size: 28px;
+        color: var(--text-color);
+        margin: 0;
+    }
+
+    /* Graph Container Styles */
+    .graph-container {
+        background-color: var(--panel-color);
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        height: 300px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .graph-container h5 {
+        color: var(--primary-color);
+        font-size: 18px;
+        margin-bottom: 10px;
+        text-align: center;
+        font-weight: 600;
+    }
+
+    .row {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+
+    .col-md-6 {
+        flex: 1;
+        min-width: 300px;
+    }
+
+    .form-select {
+        background-color: var(--panel-color);
+        color: var(--text-color);
+        border: 1px solid #555;
+        border-radius: 5px;
+        padding: 10px;
+        font-size: 16px;
+        width: 100%;
+    }
+
+    body.dark .form-select {
+        background-color: #444;
+        color: #ddd;
+        border: 1px solid #555;
+    }
+
+    /* Canvas Element Styling */
+    canvas {
+        width: 100% !important;
+        height: 100% !important;
+        display: block;
+    }
+
+    /* Table Styles */
+    .table-container {
+        background-color: var(--panel-color);
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+        overflow-x: auto;
+    }
+
+    .table-container h5 {
+        color: var(--primary-color);
+        font-size: 20px;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+
+    th, td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+        font-size: 14px;
+    }
+
+    th {
+        background-color: var(--primary-color);
+        color: white;
+        font-weight: 600;
+    }
+
+    body.dark th {
+        background-color: #444;
+    }
+
+    body.dark td {
+        color: #ddd;
+    }
+
+    /* Adjust table for mobile */
+    @media (max-width: 768px) {
+        th, td {
+            font-size: 12px;
+            padding: 10px;
+        }
+
+        .graph-container {
+            height: 250px;
+        }
+
+        .table-container h5 {
+            font-size: 18px;
+        }
+    }
+
+</style>
+
+
+<div class="dashboard-header">
+    <div style="display: flex;">
+        <i class="uil uil-dashboard icon"></i>
+        <h1 class="page-title">{{ user.company_name }} Dashboard</h1>
+    </div>
+    <div style="max-width: 250px;">
+        <select id="jobSelect" class="form-select">
+            <option value="" selected>Select a Job...</option>
+            {% for job in jobs %}
+            <option value="{{ job.id }}">{{ job.title }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+
+<div id="graphsContainer" class="row" style="display: none;">
+    <div class="col-md-6">
+        <div class="graph-container">
+            <h5>Top 3 Candidates</h5>
+            <canvas id="topCandidatesGraph"></canvas>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="graph-container">
+            <h5>Score Comparison</h5>
+            <canvas id="scoresGraph"></canvas>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="graph-container">
+            <h5>Age Distribution</h5>
+            <canvas id="ageGraph"></canvas>
+        </div>
+    </div>
+</div>
+
+<div id="tablesContainer" style="display: none;">
+    <div class="table-container">
+        <h5>Top 10 Questions/Responses by Score</h5>
+        <table id="questionsTable">
+            <thead>
+                <tr>
+                    <th>Question</th>
+                    <th style="width: 800px;">Response</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rows will be inserted dynamically -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+        document.getElementById('jobSelect').addEventListener('change', function() {
+            const jobId = this.value;
+            if (jobId) {
+                fetch(`/get_job_data/${jobId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('graphsContainer').style.display = 'flex';
+                        document.getElementById('tablesContainer').style.display = 'block';
+                        updateTopCandidatesGraph(data.topCandidates);
+                        updateScoresGraph(data.allCandidates);
+                        updateAgeGraph(data.ages);
+                        updateQuestionsTable(data.questionsResponses);
+                    });
+            } else {
+                document.getElementById('graphsContainer').style.display = 'none';
+                document.getElementById('tablesContainer').style.display = 'none';
+            }
+        });
+    
+        function updateTopCandidatesGraph(topCandidates) {
+            const ctx = document.getElementById('topCandidatesGraph').getContext('2d');
+            if (window.topCandidatesChart) window.topCandidatesChart.destroy();
+            
+            // Ensure only top 3 candidates are processed
+            const topThreeCandidates = topCandidates.slice(0, 3);
+            
+            window.topCandidatesChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: topThreeCandidates.map(candidate => candidate.name),
+                    datasets: [{
+                        label: 'Total Score',
+                        data: topThreeCandidates.map(candidate => candidate.score),
+                        backgroundColor: '#ffaf00',
+                        borderColor: '#333',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Similarity Score',
+                        data: topThreeCandidates.map(candidate => candidate.similarity),
+                        backgroundColor: '#ff9999',
+                        borderColor: '#ff6666',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: getComputedStyle(document.body).getPropertyValue('--text-color')
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: getComputedStyle(document.body).getPropertyValue('--text-color')
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: getComputedStyle(document.body).getPropertyValue('--text-color')
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    
+        function updateScoresGraph(allCandidates) {
+            const ctx = document.getElementById('scoresGraph').getContext('2d');
+            if (window.scoresChart) window.scoresChart.destroy();
+            
+            window.scoresChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: allCandidates.map(candidate => candidate.name),
+                    datasets: [{
+                        label: 'Total Score',
+                        data: allCandidates.map(candidate => candidate.totalScore),
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: '#1abc9c',
+                        borderWidth: 2,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: getComputedStyle(document.body).getPropertyValue('--text-color')
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: getComputedStyle(document.body).getPropertyValue('--text-color')
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: getComputedStyle(document.body).getPropertyValue('--text-color')
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    
+        function updateAgeGraph(ages) {
+            const ctx = document.getElementById('ageGraph').getContext('2d');
+            if (window.ageChart) window.ageChart.destroy();
+            
+            const ageGroups = {
+                "18-25": 0,
+                "26-35": 0,
+                "36-45": 0,
+                "46-55": 0,
+                "56+": 0
+            };
+        
+            ages.forEach(age => {
+                if (age >= 18 && age <= 25) ageGroups["18-25"]++;
+                else if (age >= 26 && age <= 35) ageGroups["26-35"]++;
+                else if (age >= 36 && age <= 45) ageGroups["36-45"]++;
+                else if (age >= 46 && age <= 55) ageGroups["46-55"]++;
+                else if (age >= 56) ageGroups["56+"]++;
+            });
+        
+            window.ageChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(ageGroups),
+                    datasets: [{
+                        label: 'Age Distribution',
+                        data: Object.values(ageGroups),
+                        backgroundColor: ['#ffaf00', '#f39c12', '#e67e22', '#d35400', '#c0392b'],
+                        borderColor: '#333',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: getComputedStyle(document.body).getPropertyValue('--text-color')
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    
+        function updateQuestionsTable(questionsResponses) {
+            const tableBody = document.getElementById('questionsTable').getElementsByTagName('tbody')[0];
+            tableBody.innerHTML = '';  // Clear existing rows
+    
+            questionsResponses.forEach((item, index) => {
+                if (index < 10) { // Limit to top 10 questions/responses
+                    const row = document.createElement('tr');
+    
+                    const questionCell = document.createElement('td');
+                    questionCell.textContent = item.question;
+                    row.appendChild(questionCell);
+    
+                    const responseCell = document.createElement('td');
+                    responseCell.textContent = item.response;
+                    row.appendChild(responseCell);
+    
+                    const scoreCell = document.createElement('td');
+                    scoreCell.textContent = item.score;
+                    row.appendChild(scoreCell);
+    
+                    tableBody.appendChild(row);
+                }
+            });
+        }
+
+</script>
+
+{% endblock %}

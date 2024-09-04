@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Processing...{% endblock %}
+
+{% block content %}
+<div class="loading-container">
+    <h1>Processing Your Application</h1>
+    <div class="spinner"></div>
+    <p>Please wait while we generate your interview feedback.</p>
+    <div class="footer">This may take a few moments.</div>
+</div>
+
+<style>
+    .loading-container {
+        text-align: center;
+        margin-top: 190px;
+    }
+    .loading-container h1 {
+        font-size: 24px;
+        color: #ffaf00; /* Coral (Orange) color */
+        margin-bottom: 20px;
+    }
+    .spinner {
+        border: 8px solid #f3f3f3;
+        border-top: 8px solid #ffaf00; /* Coral (Orange) color */
+        border-radius: 50%;
+        width: 80px;
+        height: 80px;
+        animation: spin 1.5s linear infinite;
+        margin: 20px auto;
+    }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    .loading-container p {
+        font-size: 16px;
+        color: #666;
+    }
+    .footer {
+        margin-top: 20px;
+        font-size: 12px;
+        color: #aaa;
+    }
+</style>
+
+<script>
+     setTimeout(function(){
+         window.location.href = "{{ next_url }}";
+     }, 100);
+</script>
+{% endblock %}
