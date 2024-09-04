@@ -109,7 +109,7 @@ We welcome contributions to improve the functionality of RucRut. If you'd like t
 
 ## **License**
 
-This project is licensed under the **MIT License**.
+This project is licensed under the **3DSF License**.
 
 ---
 
