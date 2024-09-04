@@ -80,14 +80,15 @@ To set up the RucRut application locally, follow these steps:
 
 ---
 
-[/ ## **Video Walkthrough**
+<!---
+ ## **Video Walkthrough**
 
 [Embed your explanatory video here]
 
 > *(Place the link or embedded video that explains how the application works)*
 
 ---
-/]
+--->
 
 ## **Technologies Used**
 
