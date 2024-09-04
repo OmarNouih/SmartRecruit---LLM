@@ -7,6 +7,16 @@ This system is built using **Flask**, **SQLAlchemy**, **MongoDB**, and **Hugging
 
 ---
 
+<!---
+ ## **Video Walkthrough**
+
+[Embed your explanatory video here]
+
+> *(Place the link or embedded video that explains how the application works)*
+
+---
+--->
+
 ## **Features**
 
 ### **For Job Providers**
@@ -79,16 +89,6 @@ To set up the RucRut application locally, follow these steps:
 3. **Get Feedback**: Receive instant feedback and improve based on AI evaluations.
 
 ---
-
-<!---
- ## **Video Walkthrough**
-
-[Embed your explanatory video here]
-
-> *(Place the link or embedded video that explains how the application works)*
-
----
---->
 
 ## **Technologies Used**
 
