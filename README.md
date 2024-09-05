@@ -7,15 +7,13 @@ This system is built using **Flask**, **SQLAlchemy**, **MongoDB**, and **Hugging
 
 ---
 
-<!---
  ## **Video Walkthrough**
 
-[Embed your explanatory video here]
+<iframe src="https://drive.google.com/file/d/103M12Ok-hC81KZHVV7FvGC586wEa_KKX/preview" width="640" height="480"></iframe>
 
 > *(Place the link or embedded video that explains how the application works)*
 
 ---
---->
 
 ## **Features**
 
